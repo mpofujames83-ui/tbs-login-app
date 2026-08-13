@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="TBS Company Visitor Check-in Records">
+
+    <title>TBS | Company Check-in Records</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- =========================================
+         SIDEBAR
+    ========================================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo-area">
+
+            <div class="logo">
+                TBS
+            </div>
+
+            <div class="logo-text">
+                <h2>The Blue Style</h2>
+                <span>Visitor Management</span>
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="#" class="nav-link active" data-section="dashboard">
+                <span class="nav-icon">▣</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="#visitors" class="nav-link" data-section="visitors">
+                <span class="nav-icon">♢</span>
+                <span>Attendance</span>
+            </a>
+
+            <a href="#reports" class="nav-link" data-section="reports">
+                <span class="nav-icon">▤</span>
+                <span>Reports</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="company-status">
+                <span class="status-dot"></span>
+
+                <div>
+                    <strong>System Online</strong>
+                    <small>Visitor records active</small>
+                </div>
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================================
+         MAIN CONTENT
+    ========================================== -->
+
+    <main class="main-content">
+
+        <!-- TOP HEADER -->
+
+        <header class="topbar">
+
+            <div>
+                <span class="top-label">TBS VISITOR MANAGEMENT</span>
+
+                <h1>
+                    Company Check-in Records
+                </h1>
+
+                <p>
+                    Monitor visitors who are currently checked in and out.
+                </p>
+            </div>
+
+
+            <div class="current-date" id="currentDate">
+                Loading...
+            </div>
+
+        </header>
+
+
+        <!-- =====================================
+             STATISTICS
+        ====================================== -->
+
+        <section class="stats-grid">
+
+            <div class="stat-card">
+
+                <div class="stat-icon blue">
+                    ✓
+                </div>
+
+                <div>
+                    <span>Total Visitors</span>
+                    <strong id="totalVisitors">0</strong>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon green">
+                    ●
+                </div>
+
+                <div>
+                    <span>Currently Inside</span>
+                    <strong id="totalCheckedIn">0</strong>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon gray">
+                    ↗
+                </div>
+
+                <div>
+                    <span>Checked Out</span>
+                    <strong id="totalCheckedOut">0</strong>
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon orange">
+                    !
+                </div>
+
+                <div>
+                    <span>Late Check-ins</span>
+                    <strong id="lateCheckIns">0</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             VISITOR SECTION
+        ====================================== -->
+
+        <section class="visitor-section" id="visitors">
+
+            <div class="visitor-table-card">
+
+
+                <!-- TABLE HEADER -->
+
+                <div class="table-header">
+
+                    <div class="table-title">
+
+                        <span class="section-label">
+                            VISITOR ACTIVITY
+                        </span>
+
+                        <h2>
+                            Check-in Records
+                        </h2>
+
+                        <p>
+                            View everyone who has checked in or checked out.
+                        </p>
+
+                    </div>
+
+
+                    <div class="table-actions">
+
+                        <div class="search-box">
+
+                            <span class="search-icon">
+                                ⌕
+                            </span>
+
+                            <input
+                                type="text"
+                                id="searchVisitors"
+                                placeholder="Search visitor..."
+                                autocomplete="off"
+                            >
+
+                        </div>
+
+
+                        <select id="statusFilter" class="filter-select">
+
+                            <option value="all">
+                                All Visitors
+                            </option>
+
+                            <option value="inside">
+                                Checked In
+                            </option>
+
+                            <option value="out">
+                                Checked Out
+                            </option>
+
+                        </select>
+
+
+                        <button
+                            type="button"
+                            class="danger-btn"
+                            id="clearVisitors"
+                        >
+                            🗑 Clear
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FLOATING SUMMARY -->
+
+                <div class="checkin-summary">
+
+                    <strong>
+                        Total Checked In:
+                        <span id="summaryCheckedIn">0</span>
+                    </strong>
+
+                    <span>
+                        Late Check-ins:
+                        <span id="summaryLate">0</span>
+                    </span>
+
+                </div>
+
+
+                <!-- TABLE -->
+
+                <div class="table-wrapper">
+
+                    <table class="visitor-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Name
+                                </th>
+
+                                <th>
+                                    Department
+                                </th>
+
+                                <th>
+                                    Check-in Time
+                                </th>
+
+                                <th>
+                                    Check-out Time
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Action
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="visitorTableBody">
+
+                            <!-- JavaScript inserts visitors here -->
+
+                        </tbody>
+
+                    </table>
+
+
+                    <!-- EMPTY STATE -->
+
+                    <div
+                        class="empty-state"
+                        id="emptyState"
+                        style="display: none;"
+                    >
+
+                        <div class="empty-icon">
+                            ♙
+                        </div>
+
+                        <h3>
+                            No visitor records found
+                        </h3>
+
+                        <p>
+                            Visitor check-in records will appear here.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             QUICK CHECK-IN
+        ====================================== -->
+
+        <section class="quick-checkin" id="dashboard">
+
+            <div class="quick-header">
+
+                <div>
+
+                    <span class="section-label">
+                        QUICK ACTION
+                    </span>
+
+                    <h2>
+                        Register Visitor
+                    </h2>
+
+                    <p>
+                        Add a new visitor to today's check-in records.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form id="visitorForm" class="visitor-form">
+
+                <div class="form-group">
+
+                    <label for="visitorName">
+                        Visitor Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="visitorName"
+                        placeholder="Enter visitor name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="visitorDepartment">
+                        Department
+                    </label>
+
+                    <input
+                        type="text"
+                        id="visitorDepartment"
+                        placeholder="e.g. Marketing"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="visitorPhone">
+                        Phone
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="visitorPhone"
+                        placeholder="Phone number"
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="primary-btn"
+                >
+                    + Check In Visitor
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- =====================================
+             REPORTS
+        ====================================== -->
+
+        <section class="reports-section" id="reports">
+
+            <div class="reports-card">
+
+                <div>
+
+                    <span class="section-label">
+                        REPORTS
+                    </span>
+
+                    <h2>
+                        Visitor Activity Report
+                    </h2>
+
+                    <p>
+                        Download today's visitor records.
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="secondary-btn"
+                    id="downloadReport"
+                >
+                    ↓ Download Report
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer>
+
+            <p>
+                © 2026 <strong>The Blue Style</strong>.
+                Visitor Management System.
+            </p>
+
+        </footer>
+
+    </main>
+
+</div>
+
+
+<!-- JAVASCRIPT -->
+
+<script src="script.js"></script>
+
+</body>
+</html>
