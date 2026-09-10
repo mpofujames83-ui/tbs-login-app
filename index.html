@@ -1,486 +1,2638 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="description" content="TBS Company Visitor Check-in Records">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>TBS | Company Check-in Records</title>
+    <meta
+        name="description"
+        content="TBS Visitor Management System for secure visitor check-in, check-out and staff management."
+    >
 
-    <link rel="stylesheet" href="style.css">
+    <meta
+        name="author"
+        content="The Blue Style"
+    >
+
+    <title>TBS | Visitor Management System</title>
+
+    <!-- TBS FONT -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- TAILWIND -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- REACT -->
+    <script
+        crossorigin
+        src="https://unpkg.com/react@18/umd/react.production.min.js">
+    </script>
+
+    <script
+        crossorigin
+        src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js">
+    </script>
+
+    <!-- LUCIDE ICONS -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- TBS CUSTOM STYLE -->
+    <style>
+
+        :root {
+            --tbs-blue: #0866ff;
+            --tbs-blue-dark: #0546b8;
+            --tbs-navy: #071a33;
+            --tbs-black: #05070d;
+            --tbs-light: #f4f7fb;
+            --tbs-white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background: var(--tbs-light);
+            color: var(--tbs-navy);
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font-family: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .app-shell {
+            min-height: 100vh;
+            background:
+                linear-gradient(
+                    135deg,
+                    #f4f7fb 0%,
+                    #ffffff 50%,
+                    #edf5ff 100%
+                );
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .tbs-header {
+            background: var(--tbs-black);
+            color: white;
+        }
+
+        .brand-mark {
+            box-shadow:
+                0 10px 30px rgba(8, 102, 255, 0.35);
+        }
+
+        .nav-tab {
+            border-bottom: 3px solid transparent;
+            transition: 0.2s ease;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255,255,255,0.07);
+            color: white;
+        }
+
+        .nav-tab.active {
+            color: white;
+            border-color: var(--tbs-blue);
+            background: rgba(8,102,255,0.15);
+        }
+
+        /* =========================
+           CARDS
+        ========================= */
+
+        .section-card {
+            box-shadow:
+                0 15px 45px rgba(7, 26, 51, 0.08);
+        }
+
+        .view-panel {
+            animation: rise 0.3s ease;
+        }
+
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .form-field {
+            width: 100%;
+            border: 1px solid #d5dfeb;
+            border-radius: 10px;
+            padding: 12px 14px;
+            outline: none;
+            background: white;
+            transition: 0.2s ease;
+        }
+
+        .form-field:focus {
+            border-color: var(--tbs-blue);
+            box-shadow:
+                0 0 0 3px rgba(8,102,255,0.12);
+        }
+
+        textarea.form-field {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .tbs-button {
+            transition: 0.2s ease;
+        }
+
+        .tbs-button:hover {
+            transform: translateY(-1px);
+        }
+
+        .blue-button {
+            background: var(--tbs-blue);
+            color: white;
+        }
+
+        .blue-button:hover {
+            background: var(--tbs-blue-dark);
+        }
+
+        .dark-button {
+            background: var(--tbs-navy);
+            color: white;
+        }
+
+        .dark-button:hover {
+            background: var(--tbs-black);
+        }
+
+        /* =========================
+           CALENDAR
+        ========================= */
+
+        .calendar-day {
+            min-height: 115px;
+            border-right: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .calendar-event {
+            display: block;
+            width: 100%;
+            text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* =========================
+           TOAST
+        ========================= */
+
+        .toast {
+            transform: translateY(150%);
+            opacity: 0;
+            transition: 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 640px) {
+
+            .desktop-label {
+                display: none;
+            }
+
+            .nav-tab {
+                flex: 1;
+                min-width: 120px;
+            }
+
+            .calendar-day {
+                min-height: 80px;
+            }
+        }
+
+    </style>
+
 </head>
 
-<body>
 
-<div class="app">
+<body class="app-shell">
 
-    <!-- =========================================
-         SIDEBAR
-    ========================================== -->
+<div class="w-full">
 
-    <aside class="sidebar">
 
-        <div class="logo-area">
+    <!-- =====================================================
+         TBS HEADER
+    ====================================================== -->
 
-            <div class="logo">
-                TBS
-            </div>
+    <header class="tbs-header">
 
-            <div class="logo-text">
-                <h2>The Blue Style</h2>
-                <span>Visitor Management</span>
-            </div>
+        <div class="max-w-6xl mx-auto px-5 py-5">
 
-        </div>
+            <div class="flex flex-wrap gap-4 items-center justify-between">
 
+                <!-- BRAND -->
 
-        <nav class="sidebar-nav">
+                <div class="flex items-center gap-3">
 
-            <a href="#" class="nav-link active" data-section="dashboard">
-                <span class="nav-icon">▣</span>
-                <span>Dashboard</span>
-            </a>
+                    <div
+                        class="brand-mark w-14 h-14 rounded-xl bg-white flex items-center justify-center overflow-hidden p-1"
+                    >
 
-            <a href="#visitors" class="nav-link" data-section="visitors">
-                <span class="nav-icon">♢</span>
-                <span>Attendance</span>
-            </a>
+                        <img
+                            src="../images/Logo.png"
+                            alt="TBS The Blue Style Logo"
+                            class="w-full h-full object-contain"
+                            onerror="this.style.display='none'"
+                        >
 
-            <a href="#reports" class="nav-link" data-section="reports">
-                <span class="nav-icon">▤</span>
-                <span>Reports</span>
-            </a>
+                    </div>
 
-        </nav>
 
+                    <div>
 
-        <div class="sidebar-bottom">
+                        <h1 class="font-extrabold text-2xl sm:text-3xl">
+                            TBS Visitor Management
+                        </h1>
 
-            <div class="company-status">
-                <span class="status-dot"></span>
-
-                <div>
-                    <strong>System Online</strong>
-                    <small>Visitor records active</small>
-                </div>
-            </div>
-
-        </div>
-
-    </aside>
-
-
-    <!-- =========================================
-         MAIN CONTENT
-    ========================================== -->
-
-    <main class="main-content">
-
-        <!-- TOP HEADER -->
-
-        <header class="topbar">
-
-            <div>
-                <span class="top-label">TBS VISITOR MANAGEMENT</span>
-
-                <h1>
-                    Company Check-in Records
-                </h1>
-
-                <p>
-                    Monitor visitors who are currently checked in and out.
-                </p>
-            </div>
-
-
-            <div class="current-date" id="currentDate">
-                Loading...
-            </div>
-
-        </header>
-
-
-        <!-- =====================================
-             STATISTICS
-        ====================================== -->
-
-        <section class="stats-grid">
-
-            <div class="stat-card">
-
-                <div class="stat-icon blue">
-                    ✓
-                </div>
-
-                <div>
-                    <span>Total Visitors</span>
-                    <strong id="totalVisitors">0</strong>
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon green">
-                    ●
-                </div>
-
-                <div>
-                    <span>Currently Inside</span>
-                    <strong id="totalCheckedIn">0</strong>
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon gray">
-                    ↗
-                </div>
-
-                <div>
-                    <span>Checked Out</span>
-                    <strong id="totalCheckedOut">0</strong>
-                </div>
-
-            </div>
-
-
-            <div class="stat-card">
-
-                <div class="stat-icon orange">
-                    !
-                </div>
-
-                <div>
-                    <span>Late Check-ins</span>
-                    <strong id="lateCheckIns">0</strong>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =====================================
-             VISITOR SECTION
-        ====================================== -->
-
-        <section class="visitor-section" id="visitors">
-
-            <div class="visitor-table-card">
-
-
-                <!-- TABLE HEADER -->
-
-                <div class="table-header">
-
-                    <div class="table-title">
-
-                        <span class="section-label">
-                            VISITOR ACTIVITY
-                        </span>
-
-                        <h2>
-                            Check-in Records
-                        </h2>
-
-                        <p>
-                            View everyone who has checked in or checked out.
+                        <p class="text-blue-200 text-sm">
+                            The Blue Style · Victoria Falls, Zimbabwe
                         </p>
 
                     </div>
 
-
-                    <div class="table-actions">
-
-                        <div class="search-box">
-
-                            <span class="search-icon">
-                                ⌕
-                            </span>
-
-                            <input
-                                type="text"
-                                id="searchVisitors"
-                                placeholder="Search visitor..."
-                                autocomplete="off"
-                            >
-
-                        </div>
+                </div>
 
 
-                        <select id="statusFilter" class="filter-select">
+                <!-- DATE -->
 
-                            <option value="all">
-                                All Visitors
+                <div class="flex items-center gap-2 text-blue-100 text-sm">
+
+                    <i
+                        data-lucide="calendar-days"
+                        class="w-4 h-4"
+                    ></i>
+
+                    <span id="clock">
+                        Loading...
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             NAVIGATION
+        ================================================== -->
+
+        <nav class="border-t border-white/10">
+
+            <div class="max-w-6xl mx-auto px-3 flex flex-wrap">
+
+                <button
+                    type="button"
+                    class="nav-tab active px-4 py-3 text-sm font-semibold"
+                    data-view="checkin"
+                >
+
+                    <i
+                        data-lucide="clipboard-pen-line"
+                        class="inline w-4 h-4 mr-1"
+                    ></i>
+
+                    Visitor Check-In
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="nav-tab px-4 py-3 text-sm font-semibold text-blue-200"
+                    data-view="checkout"
+                >
+
+                    <i
+                        data-lucide="log-out"
+                        class="inline w-4 h-4 mr-1"
+                    ></i>
+
+                    Check-Out
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="nav-tab px-4 py-3 text-sm font-semibold text-blue-200"
+                    data-view="dashboard"
+                >
+
+                    <i
+                        data-lucide="layout-dashboard"
+                        class="inline w-4 h-4 mr-1"
+                    ></i>
+
+                    Staff Dashboard
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="nav-tab px-4 py-3 text-sm font-semibold text-blue-200"
+                    data-view="calendar"
+                >
+
+                    <i
+                        data-lucide="calendar-days"
+                        class="inline w-4 h-4 mr-1"
+                    ></i>
+
+                    Calendar
+
+                </button>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="max-w-6xl mx-auto px-5 py-8">
+
+
+        <!-- =================================================
+             CHECK-IN
+        ================================================== -->
+
+        <section
+            id="view-checkin"
+            class="view-panel max-w-3xl mx-auto"
+        >
+
+            <div
+                class="rounded-2xl bg-[#071a33] p-7 text-white mb-6"
+            >
+
+                <p class="text-blue-400 font-bold tracking-widest uppercase text-xs">
+                    Welcome to TBS
+                </p>
+
+                <h2 class="font-extrabold mt-2 text-2xl">
+                    Visitor Check-In
+                </h2>
+
+                <p class="text-blue-100 mt-2">
+                    Please complete your details below to register your visit.
+                </p>
+
+            </div>
+
+
+            <!-- FORM -->
+
+            <form
+                id="checkin-form"
+                class="section-card bg-white rounded-2xl p-6 sm:p-8"
+            >
+
+                <div class="grid sm:grid-cols-2 gap-5">
+
+
+                    <div>
+
+                        <label
+                            class="block font-semibold mb-2"
+                            for="visitor-name"
+                        >
+                            Full Name
+                        </label>
+
+                        <input
+                            id="visitor-name"
+                            class="form-field"
+                            required
+                            autocomplete="name"
+                            placeholder="Enter your full name"
+                        >
+
+                    </div>
+
+
+                    <div>
+
+                        <label
+                            class="block font-semibold mb-2"
+                            for="visitor-phone"
+                        >
+                            Phone Number
+                        </label>
+
+                        <input
+                            id="visitor-phone"
+                            class="form-field"
+                            required
+                            inputmode="tel"
+                            autocomplete="tel"
+                            placeholder="Enter phone number"
+                        >
+
+                    </div>
+
+
+                    <div>
+
+                        <label
+                            class="block font-semibold mb-2"
+                            for="visitor-email"
+                        >
+                            Email Address
+                        </label>
+
+                        <input
+                            id="visitor-email"
+                            type="email"
+                            class="form-field"
+                            required
+                            autocomplete="email"
+                            placeholder="Enter email address"
+                        >
+
+                    </div>
+
+
+                    <div>
+
+                        <label
+                            class="block font-semibold mb-2"
+                            for="visitor-company"
+                        >
+                            Company / Organisation
+                        </label>
+
+                        <input
+                            id="visitor-company"
+                            class="form-field"
+                            required
+                            autocomplete="organization"
+                            placeholder="Company or organisation"
+                        >
+
+                    </div>
+
+
+                    <div>
+
+                        <label
+                            class="block font-semibold mb-2"
+                            for="visitor-host"
+                        >
+                            Person to Visit
+                        </label>
+
+                        <input
+                            id="visitor-host"
+                            class="form-field"
+                            required
+                            placeholder="Who are you visiting?"
+                        >
+
+                    </div>
+
+
+                    <div>
+
+                        <label
+                            class="block font-semibold mb-2"
+                            for="visitor-reason"
+                        >
+                            Reason for Visit
+                        </label>
+
+                        <select
+                            id="visitor-reason"
+                            class="form-field"
+                            required
+                        >
+
+                            <option value="">
+                                Select a reason
                             </option>
 
-                            <option value="inside">
-                                Checked In
+                            <option>
+                                Business Meeting
                             </option>
 
-                            <option value="out">
-                                Checked Out
+                            <option>
+                                Customer Service
+                            </option>
+
+                            <option>
+                                Delivery
+                            </option>
+
+                            <option>
+                                Interview
+                            </option>
+
+                            <option>
+                                Sales
+                            </option>
+
+                            <option>
+                                Custom Printing
+                            </option>
+
+                            <option>
+                                Technology Services
+                            </option>
+
+                            <option>
+                                General Enquiry
+                            </option>
+
+                            <option>
+                                Other
                             </option>
 
                         </select>
 
+                    </div>
 
-                        <button
-                            type="button"
-                            class="danger-btn"
-                            id="clearVisitors"
+
+                    <div class="sm:col-span-2">
+
+                        <label
+                            class="block font-semibold mb-2"
+                            for="visitor-notes"
                         >
-                            🗑 Clear
-                        </button>
+                            Additional Notes
+                        </label>
+
+                        <textarea
+                            id="visitor-notes"
+                            class="form-field"
+                            placeholder="Optional notes"
+                        ></textarea>
 
                     </div>
 
                 </div>
 
 
-                <!-- FLOATING SUMMARY -->
+                <button
+                    id="checkin-submit"
+                    type="submit"
+                    class="tbs-button blue-button mt-7 w-full rounded-xl font-bold px-5 py-3"
+                >
 
-                <div class="checkin-summary">
+                    Check In Visitor
 
-                    <strong>
-                        Total Checked In:
-                        <span id="summaryCheckedIn">0</span>
-                    </strong>
+                </button>
 
-                    <span>
-                        Late Check-ins:
-                        <span id="summaryLate">0</span>
-                    </span>
+            </form>
+
+
+            <!-- SUCCESS -->
+
+            <section
+                id="checkin-success"
+                class="hidden section-card mt-6 rounded-2xl bg-white p-7 text-center"
+            >
+
+                <div
+                    class="mx-auto mb-4 w-14 h-14 rounded-full bg-green-100 text-green-700 flex items-center justify-center"
+                >
+
+                    <i
+                        data-lucide="check"
+                        class="w-8 h-8"
+                    ></i>
 
                 </div>
 
 
-                <!-- TABLE -->
+                <h2 class="font-extrabold text-2xl">
+                    You Are Checked In
+                </h2>
 
-                <div class="table-wrapper">
 
-                    <table class="visitor-table">
+                <p class="text-slate-600 mt-2">
+                    Please keep your visitor code safe.
+                    You will need it when checking out.
+                </p>
 
-                        <thead>
+
+                <div
+                    class="my-6 bg-blue-50 border border-blue-200 rounded-xl px-5 py-4"
+                >
+
+                    <p class="text-xs font-bold uppercase tracking-widest text-blue-600">
+                        Your Visitor Code
+                    </p>
+
+                    <p
+                        id="created-code"
+                        class="text-3xl font-extrabold tracking-widest text-[#071a33] mt-1"
+                    ></p>
+
+                </div>
+
+
+                <button
+                    id="new-checkin"
+                    type="button"
+                    class="tbs-button dark-button rounded-xl font-bold px-5 py-3"
+                >
+
+                    Register Another Visitor
+
+                </button>
+
+            </section>
+
+        </section>
+
+
+        <!-- =================================================
+             CHECK OUT
+        ================================================== -->
+
+        <section
+            id="view-checkout"
+            class="view-panel hidden max-w-2xl mx-auto"
+        >
+
+            <div
+                class="rounded-2xl bg-[#071a33] p-7 text-white mb-6"
+            >
+
+                <p class="text-blue-400 font-bold tracking-widest uppercase text-xs">
+                    Leaving TBS
+                </p>
+
+                <h2 class="font-extrabold mt-2 text-2xl">
+                    Visitor Check-Out
+                </h2>
+
+                <p class="text-blue-100 mt-2">
+                    Enter your visitor code to complete your visit.
+                </p>
+
+            </div>
+
+
+            <form
+                id="lookup-form"
+                class="section-card bg-white rounded-2xl p-7"
+            >
+
+                <label
+                    class="block font-semibold mb-2"
+                    for="lookup-code"
+                >
+                    Visitor Code
+                </label>
+
+
+                <div class="flex gap-3">
+
+                    <input
+                        id="lookup-code"
+                        class="form-field uppercase"
+                        required
+                        placeholder="TBS-XXXXX-XXX"
+                    >
+
+
+                    <button
+                        type="submit"
+                        class="tbs-button blue-button rounded-xl font-bold px-5"
+                    >
+
+                        Find
+
+                    </button>
+
+                </div>
+
+            </form>
+
+
+            <article
+                id="checkout-card"
+                class="hidden section-card mt-6 bg-white rounded-2xl p-7"
+            >
+
+                <p class="text-xs font-bold uppercase tracking-widest text-blue-600">
+                    Active Visitor Found
+                </p>
+
+                <h2
+                    id="checkout-name"
+                    class="text-2xl font-extrabold mt-2"
+                ></h2>
+
+
+                <div
+                    id="checkout-details"
+                    class="grid sm:grid-cols-2 gap-3 text-sm text-slate-600 my-5"
+                ></div>
+
+
+                <button
+                    id="checkout-confirm"
+                    type="button"
+                    class="tbs-button dark-button w-full rounded-xl font-bold py-3"
+                >
+
+                    Confirm Check-Out
+
+                </button>
+
+            </article>
+
+        </section>
+
+
+        <!-- =================================================
+             CALENDAR
+        ================================================== -->
+
+        <section
+            id="view-calendar"
+            class="view-panel hidden"
+        >
+
+            <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+
+                <div>
+
+                    <p class="text-blue-600 font-bold tracking-widest uppercase text-xs">
+                        Visitor Schedule
+                    </p>
+
+                    <h2 class="font-extrabold text-[#071a33] mt-1 text-2xl">
+                        TBS Visitor Calendar
+                    </h2>
+
+                </div>
+
+
+                <div class="flex gap-2 flex-wrap">
+
+                    <button
+                        id="calendar-prev"
+                        type="button"
+                        class="rounded-lg bg-white border px-3 py-2 font-bold"
+                    >
+                        Previous
+                    </button>
+
+                    <button
+                        id="calendar-today"
+                        type="button"
+                        class="rounded-lg bg-blue-600 text-white px-4 py-2 font-bold"
+                    >
+                        Today
+                    </button>
+
+                    <button
+                        id="calendar-next"
+                        type="button"
+                        class="rounded-lg bg-white border px-3 py-2 font-bold"
+                    >
+                        Next
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <section
+                class="section-card bg-white rounded-2xl overflow-hidden"
+            >
+
+                <div
+                    id="calendar-title"
+                    class="p-5 border-b text-center font-extrabold text-xl"
+                ></div>
+
+
+                <div
+                    class="grid grid-cols-7 bg-slate-50 text-xs uppercase tracking-wide text-slate-500 font-bold"
+                >
+
+                    <div class="p-3 text-center">Sun</div>
+                    <div class="p-3 text-center">Mon</div>
+                    <div class="p-3 text-center">Tue</div>
+                    <div class="p-3 text-center">Wed</div>
+                    <div class="p-3 text-center">Thu</div>
+                    <div class="p-3 text-center">Fri</div>
+                    <div class="p-3 text-center">Sat</div>
+
+                </div>
+
+
+                <div
+                    id="calendar-grid"
+                    class="grid grid-cols-7"
+                ></div>
+
+            </section>
+
+
+            <aside
+                id="calendar-details"
+                class="hidden section-card mt-6 bg-white rounded-2xl p-6"
+            >
+
+                <p class="text-xs font-bold uppercase tracking-widest text-blue-600">
+                    Visitor Appointment
+                </p>
+
+                <h3
+                    id="calendar-visitor-name"
+                    class="text-2xl font-extrabold mt-2"
+                ></h3>
+
+                <div
+                    id="calendar-visitor-details"
+                    class="grid sm:grid-cols-2 gap-3 mt-4 text-sm"
+                ></div>
+
+            </aside>
+
+        </section>
+
+
+        <!-- =================================================
+             STAFF DASHBOARD
+        ================================================== -->
+
+        <section
+            id="view-dashboard"
+            class="view-panel hidden"
+        >
+
+            <div class="flex flex-wrap justify-between items-end gap-3 mb-6">
+
+                <div>
+
+                    <p class="text-blue-600 font-bold tracking-widest uppercase text-xs">
+                        Staff View
+                    </p>
+
+                    <h2 class="font-extrabold text-[#071a33] mt-1 text-2xl">
+                        Visitor Dashboard
+                    </h2>
+
+                </div>
+
+                <p
+                    id="record-count"
+                    class="text-sm text-slate-500"
+                ></p>
+
+            </div>
+
+
+            <!-- STATISTICS -->
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-7">
+
+
+                <article
+                    class="bg-white rounded-2xl p-5 section-card"
+                >
+
+                    <p class="text-slate-500 text-sm font-semibold">
+                        Total Visits
+                    </p>
+
+                    <p
+                        id="stat-total"
+                        class="text-4xl font-extrabold mt-2"
+                    >
+                        0
+                    </p>
+
+                </article>
+
+
+                <article
+                    class="bg-[#071a33] rounded-2xl p-5 section-card text-white"
+                >
+
+                    <p class="text-blue-200 text-sm font-semibold">
+                        Currently On Site
+                    </p>
+
+                    <p
+                        id="stat-active"
+                        class="text-4xl font-extrabold mt-2"
+                    >
+                        0
+                    </p>
+
+                </article>
+
+
+                <article
+                    class="bg-blue-600 rounded-2xl p-5 section-card text-white"
+                >
+
+                    <p class="text-blue-100 text-sm font-semibold">
+                        Checked Out
+                    </p>
+
+                    <p
+                        id="stat-out"
+                        class="text-4xl font-extrabold mt-2"
+                    >
+                        0
+                    </p>
+
+                </article>
+
+
+                <article
+                    class="bg-white rounded-2xl p-5 section-card"
+                >
+
+                    <p class="text-slate-500 text-sm font-semibold">
+                        Organisations
+                    </p>
+
+                    <p
+                        id="stat-company"
+                        class="text-4xl font-extrabold mt-2"
+                    >
+                        0
+                    </p>
+
+                </article>
+
+            </div>
+
+
+            <!-- ACTIVE VISITORS -->
+
+            <section
+                class="section-card bg-white rounded-2xl overflow-hidden mb-7"
+            >
+
+                <div
+                    class="p-5 border-b flex flex-wrap gap-4 items-center justify-between"
+                >
+
+                    <h3 class="font-extrabold text-lg">
+                        Visitors Currently On Site
+                    </h3>
+
+                    <span
+                        id="active-count"
+                        class="text-sm font-semibold text-blue-600"
+                    ></span>
+
+                </div>
+
+
+                <div class="overflow-x-auto">
+
+                    <table class="w-full text-left min-w-[650px]">
+
+                        <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
 
                             <tr>
 
-                                <th>
-                                    Name
-                                </th>
-
-                                <th>
-                                    Department
-                                </th>
-
-                                <th>
-                                    Check-in Time
-                                </th>
-
-                                <th>
-                                    Check-out Time
-                                </th>
-
-                                <th>
-                                    Status
-                                </th>
-
-                                <th>
-                                    Action
-                                </th>
+                                <th class="p-4">Code</th>
+                                <th class="p-4">Visitor</th>
+                                <th class="p-4">Host</th>
+                                <th class="p-4">Checked In</th>
+                                <th class="p-4">Status</th>
 
                             </tr>
 
                         </thead>
 
 
-                        <tbody id="visitorTableBody">
-
-                            <!-- JavaScript inserts visitors here -->
-
-                        </tbody>
+                        <tbody id="active-table"></tbody>
 
                     </table>
 
+                </div>
 
-                    <!-- EMPTY STATE -->
 
-                    <div
-                        class="empty-state"
-                        id="emptyState"
-                        style="display: none;"
-                    >
+                <p
+                    id="active-empty"
+                    class="hidden p-8 text-center text-slate-500"
+                >
+                    There are no visitors currently checked in.
+                </p>
 
-                        <div class="empty-icon">
-                            ♙
-                        </div>
+            </section>
 
-                        <h3>
-                            No visitor records found
-                        </h3>
 
-                        <p>
-                            Visitor check-in records will appear here.
-                        </p>
+            <!-- HISTORY -->
+
+            <section
+                class="section-card bg-white rounded-2xl overflow-hidden"
+            >
+
+                <div
+                    class="p-5 border-b flex flex-wrap gap-4 items-center justify-between"
+                >
+
+                    <h3 class="font-extrabold text-lg">
+                        Visitor History
+                    </h3>
+
+
+                    <div class="relative">
+
+                        <i
+                            data-lucide="search"
+                            class="absolute left-3 top-3 w-4 h-4 text-slate-400"
+                        ></i>
+
+                        <input
+                            id="history-search"
+                            class="form-field pl-9 py-2 text-sm"
+                            placeholder="Search visitor"
+                        >
 
                     </div>
 
                 </div>
 
-            </div>
 
-        </section>
+                <div class="overflow-x-auto">
 
+                    <table class="w-full text-left min-w-[780px]">
 
-        <!-- =====================================
-             QUICK CHECK-IN
-        ====================================== -->
+                        <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
 
-        <section class="quick-checkin" id="dashboard">
+                            <tr>
 
-            <div class="quick-header">
+                                <th class="p-4">Code</th>
+                                <th class="p-4">Visitor</th>
+                                <th class="p-4">Company</th>
+                                <th class="p-4">Check-In</th>
+                                <th class="p-4">Check-Out</th>
+                                <th class="p-4">Status</th>
 
-                <div>
+                            </tr>
 
-                    <span class="section-label">
-                        QUICK ACTION
-                    </span>
-
-                    <h2>
-                        Register Visitor
-                    </h2>
-
-                    <p>
-                        Add a new visitor to today's check-in records.
-                    </p>
-
-                </div>
-
-            </div>
+                        </thead>
 
 
-            <form id="visitorForm" class="visitor-form">
+                        <tbody id="history-table"></tbody>
 
-                <div class="form-group">
-
-                    <label for="visitorName">
-                        Visitor Name
-                    </label>
-
-                    <input
-                        type="text"
-                        id="visitorName"
-                        placeholder="Enter visitor name"
-                        required
-                    >
+                    </table>
 
                 </div>
 
 
-                <div class="form-group">
+                <p
+                    id="history-empty"
+                    class="hidden p-8 text-center text-slate-500"
+                >
+                    No visitor records match your search.
+                </p>
 
-                    <label for="visitorDepartment">
-                        Department
-                    </label>
-
-                    <input
-                        type="text"
-                        id="visitorDepartment"
-                        placeholder="e.g. Marketing"
-                        required
-                    >
-
-                </div>
+            </section>
 
 
-                <div class="form-group">
+            <!-- CLEAR DATA -->
 
-                    <label for="visitorPhone">
-                        Phone
-                    </label>
+            <section
+                class="mt-6 flex flex-wrap items-center justify-between gap-4 bg-white border rounded-xl p-4"
+            >
 
-                    <input
-                        type="tel"
-                        id="visitorPhone"
-                        placeholder="Phone number"
-                    >
-
-                </div>
+                <p class="text-sm text-slate-600">
+                    Remove all saved visitor records from this demo.
+                </p>
 
 
                 <button
-                    type="submit"
-                    class="primary-btn"
+                    id="clear-trigger"
+                    type="button"
+                    class="rounded-lg border border-red-200 text-red-700 bg-white px-4 py-2 text-sm font-bold hover:bg-red-50"
                 >
-                    + Check In Visitor
+
+                    Clear Demo Data
+
                 </button>
 
-            </form>
-
-        </section>
+            </section>
 
 
-        <!-- =====================================
-             REPORTS
-        ====================================== -->
+            <section
+                id="clear-panel"
+                class="hidden mt-3 rounded-xl border border-red-200 bg-red-50 p-4 flex flex-wrap gap-3 items-center justify-between"
+            >
 
-        <section class="reports-section" id="reports">
+                <p class="text-red-800 font-semibold">
+                    This will permanently remove all visitor records.
+                    Continue?
+                </p>
 
-            <div class="reports-card">
 
-                <div>
+                <div class="flex gap-2">
 
-                    <span class="section-label">
-                        REPORTS
-                    </span>
+                    <button
+                        id="clear-cancel"
+                        type="button"
+                        class="rounded-lg bg-white text-slate-700 border px-4 py-2 text-sm font-bold"
+                    >
+                        Cancel
+                    </button>
 
-                    <h2>
-                        Visitor Activity Report
-                    </h2>
 
-                    <p>
-                        Download today's visitor records.
-                    </p>
+                    <button
+                        id="clear-confirm"
+                        type="button"
+                        class="rounded-lg bg-red-700 text-white px-4 py-2 text-sm font-bold"
+                    >
+                        Yes, Clear Records
+                    </button>
 
                 </div>
 
-
-                <button
-                    class="secondary-btn"
-                    id="downloadReport"
-                >
-                    ↓ Download Report
-                </button>
-
-            </div>
+            </section>
 
         </section>
 
 
-        <!-- FOOTER -->
+        <!-- =================================================
+             LOADING
+        ================================================== -->
 
-        <footer>
+        <section
+            id="loading-state"
+            class="max-w-xl mx-auto text-center py-12"
+        >
 
-            <p>
-                © 2026 <strong>The Blue Style</strong>.
-                Visitor Management System.
+            <i
+                data-lucide="loader-circle"
+                class="w-8 h-8 animate-spin mx-auto text-blue-600"
+            ></i>
+
+            <p
+                id="loading-message"
+                class="text-slate-500 mt-3"
+            >
+                Loading visitor records...
             </p>
 
-        </footer>
+
+            <button
+                id="retry-load"
+                type="button"
+                class="hidden mt-4 rounded-lg bg-blue-600 text-white font-bold px-4 py-2"
+            >
+                Try Again
+            </button>
+
+        </section>
 
     </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer
+        class="bg-[#05070d] text-blue-100 mt-8"
+    >
+
+        <div
+            class="max-w-6xl mx-auto px-5 py-5 flex flex-wrap gap-2 justify-between text-sm"
+        >
+
+            <span>
+                © 2026 The Blue Style (TBS)
+            </span>
+
+            <span>
+                Visitor Management System · Victoria Falls, Zimbabwe
+            </span>
+
+        </div>
+
+    </footer>
+
 
 </div>
 
 
-<!-- JAVASCRIPT -->
+<!-- =====================================================
+     TOAST
+====================================================== -->
 
-<script src="script.js"></script>
+<div
+    id="toast"
+    class="toast fixed z-50 bottom-5 right-5 max-w-sm rounded-xl bg-[#071a33] text-white shadow-2xl px-5 py-4 flex gap-3 items-center"
+    role="status"
+    aria-live="polite"
+>
+
+    <i
+        id="toast-icon"
+        data-lucide="circle-check"
+        class="w-5 h-5"
+    ></i>
+
+    <span id="toast-message"></span>
+
+</div>
+
+
+<!-- =====================================================
+     TEMPLATES
+====================================================== -->
+
+<template id="active-row-template">
+
+    <tr class="border-t border-slate-100">
+
+        <td class="p-4 font-mono text-xs font-bold text-blue-600"
+            data-field="code">
+        </td>
+
+        <td class="p-4">
+
+            <p
+                class="font-bold"
+                data-field="name">
+            </p>
+
+            <p
+                class="text-xs text-slate-500"
+                data-field="company">
+            </p>
+
+        </td>
+
+        <td
+            class="p-4 text-sm"
+            data-field="host">
+        </td>
+
+        <td
+            class="p-4 text-sm text-slate-600"
+            data-field="in">
+        </td>
+
+        <td class="p-4">
+
+            <span
+                class="rounded-full bg-green-100 text-green-700 px-2.5 py-1 text-xs font-bold"
+            >
+                On Site
+            </span>
+
+        </td>
+
+    </tr>
+
+</template>
+
+
+<template id="history-row-template">
+
+    <tr class="border-t border-slate-100">
+
+        <td
+            class="p-4 font-mono text-xs font-bold text-blue-600"
+            data-field="code">
+        </td>
+
+        <td class="p-4">
+
+            <p
+                class="font-bold"
+                data-field="name">
+            </p>
+
+            <p
+                class="text-xs text-slate-500"
+                data-field="host">
+            </p>
+
+        </td>
+
+        <td
+            class="p-4 text-sm"
+            data-field="company">
+        </td>
+
+        <td
+            class="p-4 text-sm text-slate-600"
+            data-field="in">
+        </td>
+
+        <td
+            class="p-4 text-sm text-slate-600"
+            data-field="out">
+        </td>
+
+        <td class="p-4">
+
+            <span
+                data-field="status"
+                class="rounded-full px-2.5 py-1 text-xs font-bold">
+            </span>
+
+        </td>
+
+    </tr>
+
+</template>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+====================================================== -->
+
+<script>
+
+let backendRecords = [];
+let selectedRecord = null;
+
+const $ = id => document.getElementById(id);
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+function showToast(message, error = false) {
+
+    $("toast-message").textContent = message;
+
+    $("toast-icon").setAttribute(
+        "data-lucide",
+        error ? "circle-alert" : "circle-check"
+    );
+
+    lucide.createIcons();
+
+    $("toast").classList.add("show");
+
+    clearTimeout(showToast.timer);
+
+    showToast.timer = setTimeout(() => {
+
+        $("toast").classList.remove("show");
+
+    }, 4000);
+
+}
+
+
+/* =====================================================
+   DATE
+===================================================== */
+
+function formatDate(value) {
+
+    if (!value) {
+        return "—";
+    }
+
+    return new Intl.DateTimeFormat(
+        "en-ZW",
+        {
+            dateStyle: "medium",
+            timeStyle: "short"
+        }
+    ).format(new Date(value));
+
+}
+
+
+/* =====================================================
+   VISITOR CODE
+===================================================== */
+
+function visitorCode() {
+
+    const random =
+        Math.random()
+            .toString(36)
+            .substring(2, 7)
+            .toUpperCase();
+
+    return "TBS-" + random;
+
+}
+
+
+/* =====================================================
+   LOCAL DATE PARTS
+===================================================== */
+
+function localParts(value) {
+
+    const date = value
+        ? new Date(value)
+        : new Date();
+
+    return {
+
+        date: date.toLocaleDateString("en-CA"),
+
+        time: date.toLocaleTimeString(
+            [],
+            {
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        )
+
+    };
+
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+function showView(name) {
+
+    const views = [
+        "checkin",
+        "checkout",
+        "dashboard",
+        "calendar"
+    ];
+
+    views.forEach(view => {
+
+        const section =
+            $("view-" + view);
+
+        const button =
+            document.querySelector(
+                `[data-view="${view}"]`
+            );
+
+        section.classList.toggle(
+            "hidden",
+            view !== name
+        );
+
+        button.classList.toggle(
+            "active",
+            view === name
+        );
+
+        button.classList.toggle(
+            "text-blue-200",
+            view !== name
+        );
+
+    });
+
+
+    $("loading-state").classList.add("hidden");
+
+
+    if (name === "dashboard") {
+        renderDashboard();
+    }
+
+    if (name === "calendar") {
+        renderCalendar();
+    }
+
+}
+
+
+/* =====================================================
+   RENDER DASHBOARD
+===================================================== */
+
+function renderDashboard() {
+
+    const records =
+        [...backendRecords].sort(
+            (a, b) =>
+                new Date(b.check_in) -
+                new Date(a.check_in)
+        );
+
+
+    const active =
+        records.filter(
+            record => !record.check_out
+        );
+
+
+    $("stat-total").textContent =
+        records.length;
+
+
+    $("stat-active").textContent =
+        active.length;
+
+
+    $("stat-out").textContent =
+        records.length - active.length;
+
+
+    const companies =
+        new Set(
+            records
+                .map(record =>
+                    (record.company || "")
+                        .trim()
+                        .toLowerCase()
+                )
+                .filter(Boolean)
+        );
+
+
+    $("stat-company").textContent =
+        companies.size;
+
+
+    $("record-count").textContent =
+        `${records.length} saved visitor record${records.length === 1 ? "" : "s"}`;
+
+
+    $("active-count").textContent =
+        `${active.length} currently on site`;
+
+
+    const activeTable =
+        $("active-table");
+
+    activeTable.replaceChildren();
+
+
+    active.forEach(record => {
+
+        const row =
+            $("active-row-template")
+                .content
+                .cloneNode(true);
+
+
+        row.querySelector(
+            '[data-field="code"]'
+        ).textContent =
+            record.visitor_code;
+
+
+        row.querySelector(
+            '[data-field="name"]'
+        ).textContent =
+            record.name;
+
+
+        row.querySelector(
+            '[data-field="company"]'
+        ).textContent =
+            record.company;
+
+
+        row.querySelector(
+            '[data-field="host"]'
+        ).textContent =
+            record.person_to_visit;
+
+
+        row.querySelector(
+            '[data-field="in"]'
+        ).textContent =
+            formatDate(record.check_in);
+
+
+        activeTable.appendChild(row);
+
+    });
+
+
+    $("active-empty").classList.toggle(
+        "hidden",
+        active.length !== 0
+    );
+
+
+    renderHistory();
+
+}
+
+
+/* =====================================================
+   HISTORY
+===================================================== */
+
+function renderHistory() {
+
+    const search =
+        $("history-search")
+            .value
+            .trim()
+            .toLowerCase();
+
+
+    const records =
+        [...backendRecords]
+            .filter(record => {
+
+                const text = [
+                    record.visitor_code,
+                    record.name,
+                    record.company,
+                    record.person_to_visit
+                ]
+                .join(" ")
+                .toLowerCase();
+
+                return text.includes(search);
+
+            })
+            .sort(
+                (a, b) =>
+                    new Date(b.check_in) -
+                    new Date(a.check_in)
+            );
+
+
+    const table =
+        $("history-table");
+
+    table.replaceChildren();
+
+
+    records.forEach(record => {
+
+        const row =
+            $("history-row-template")
+                .content
+                .cloneNode(true);
+
+
+        row.querySelector(
+            '[data-field="code"]'
+        ).textContent =
+            record.visitor_code;
+
+
+        row.querySelector(
+            '[data-field="name"]'
+        ).textContent =
+            record.name;
+
+
+        row.querySelector(
+            '[data-field="host"]'
+        ).textContent =
+            "Host: " +
+            record.person_to_visit;
+
+
+        row.querySelector(
+            '[data-field="company"]'
+        ).textContent =
+            record.company;
+
+
+        row.querySelector(
+            '[data-field="in"]'
+        ).textContent =
+            formatDate(record.check_in);
+
+
+        row.querySelector(
+            '[data-field="out"]'
+        ).textContent =
+            formatDate(record.check_out);
+
+
+        const status =
+            row.querySelector(
+                '[data-field="status"]'
+            );
+
+
+        if (record.check_out) {
+
+            status.textContent =
+                "Checked Out";
+
+            status.className =
+                "rounded-full px-2.5 py-1 text-xs font-bold bg-slate-100 text-slate-600";
+
+        } else {
+
+            status.textContent =
+                "On Site";
+
+            status.className =
+                "rounded-full px-2.5 py-1 text-xs font-bold bg-green-100 text-green-700";
+
+        }
+
+
+        table.appendChild(row);
+
+    });
+
+
+    $("history-empty").classList.toggle(
+        "hidden",
+        records.length !== 0
+    );
+
+}
+
+
+/* =====================================================
+   CALENDAR
+===================================================== */
+
+let calendarMonth =
+    new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        1
+    );
+
+
+function renderCalendar() {
+
+    const year =
+        calendarMonth.getFullYear();
+
+    const month =
+        calendarMonth.getMonth();
+
+    const firstDay =
+        new Date(
+            year,
+            month,
+            1
+        ).getDay();
+
+    const days =
+        new Date(
+            year,
+            month + 1,
+            0
+        ).getDate();
+
+
+    $("calendar-title").textContent =
+        calendarMonth.toLocaleDateString(
+            "en",
+            {
+                month: "long",
+                year: "numeric"
+            }
+        );
+
+
+    const grid =
+        $("calendar-grid");
+
+    grid.replaceChildren();
+
+
+    for (
+        let i = 0;
+        i < firstDay;
+        i++
+    ) {
+
+        const empty =
+            document.createElement("div");
+
+        empty.className =
+            "calendar-day bg-slate-50";
+
+        grid.appendChild(empty);
+
+    }
+
+
+    const today =
+        new Date()
+            .toLocaleDateString("en-CA");
+
+
+    for (
+        let day = 1;
+        day <= days;
+        day++
+    ) {
+
+        const key =
+            `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+
+        const cell =
+            document.createElement("div");
+
+        cell.className =
+            "calendar-day p-2";
+
+
+        const dayNumber =
+            document.createElement("div");
+
+        dayNumber.textContent =
+            day;
+
+
+        if (key === today) {
+
+            dayNumber.className =
+                "text-white bg-blue-600 rounded-full w-7 h-7 flex items-center justify-center font-bold";
+
+        } else {
+
+            dayNumber.className =
+                "text-slate-700 font-bold";
+
+        }
+
+
+        cell.appendChild(dayNumber);
+
+
+        const dayRecords =
+            backendRecords.filter(
+                record =>
+                    (
+                        record.check_in_date ||
+                        localParts(record.check_in).date
+                    ) === key
+            );
+
+
+        dayRecords.forEach(record => {
+
+            const event =
+                document.createElement("button");
+
+            event.type = "button";
+
+            event.className =
+                "calendar-event mt-2 rounded-md bg-blue-50 text-blue-600 px-2 py-1 text-xs font-bold";
+
+            event.textContent =
+                record.name;
+
+            event.addEventListener(
+                "click",
+                () =>
+                    showCalendarDetails(record)
+            );
+
+
+            cell.appendChild(event);
+
+        });
+
+
+        grid.appendChild(cell);
+
+    }
+
+}
+
+
+/* =====================================================
+   CALENDAR DETAILS
+===================================================== */
+
+function showCalendarDetails(record) {
+
+    const inParts = {
+
+        date:
+            record.check_in_date ||
+            localParts(record.check_in).date,
+
+        time:
+            record.check_in_time ||
+            localParts(record.check_in).time
+
+    };
+
+
+    const outParts =
+        record.check_out
+            ? {
+
+                date:
+                    record.check_out_date ||
+                    localParts(record.check_out).date,
+
+                time:
+                    record.check_out_time ||
+                    localParts(record.check_out).time
+
+            }
+            : null;
+
+
+    $("calendar-visitor-name")
+        .textContent =
+        record.name;
+
+
+    const container =
+        $("calendar-visitor-details");
+
+    container.replaceChildren();
+
+
+    const details = [
+
+        [
+            "Company",
+            record.company
+        ],
+
+        [
+            "Person to Visit",
+            record.person_to_visit
+        ],
+
+        [
+            "Reason",
+            record.reason
+        ],
+
+        [
+            "Check-In",
+            `${inParts.date} at ${inParts.time}`
+        ],
+
+        [
+            "Check-Out",
+            outParts
+                ? `${outParts.date} at ${outParts.time}`
+                : "Still on site"
+        ],
+
+        [
+            "Status",
+            record.check_out
+                ? "Checked Out"
+                : "Checked In"
+        ]
+
+    ];
+
+
+    details.forEach(
+        ([label, value]) => {
+
+            const item =
+                document.createElement("div");
+
+            item.className =
+                "bg-slate-50 rounded-lg p-3";
+
+
+            const labelElement =
+                document.createElement("span");
+
+            labelElement.className =
+                "text-xs uppercase tracking-wide text-slate-500 font-bold";
+
+            labelElement.textContent =
+                label;
+
+
+            const valueElement =
+                document.createElement("div");
+
+            valueElement.className =
+                "font-semibold mt-1";
+
+            valueElement.textContent =
+                value || "—";
+
+
+            item.appendChild(labelElement);
+            item.appendChild(valueElement);
+
+            container.appendChild(item);
+
+        }
+    );
+
+
+    $("calendar-details")
+        .classList.remove("hidden");
+
+}
+
+
+/* =====================================================
+   CHECK-IN
+===================================================== */
+
+$("checkin-form")
+    .addEventListener(
+        "submit",
+        event => {
+
+            event.preventDefault();
+
+
+            const now =
+                new Date();
+
+
+            const parts =
+                localParts(now);
+
+
+            const record = {
+
+                visitor_code:
+                    visitorCode(),
+
+                name:
+                    $("visitor-name")
+                        .value
+                        .trim(),
+
+                phone:
+                    $("visitor-phone")
+                        .value
+                        .trim(),
+
+                email:
+                    $("visitor-email")
+                        .value
+                        .trim(),
+
+                company:
+                    $("visitor-company")
+                        .value
+                        .trim(),
+
+                person_to_visit:
+                    $("visitor-host")
+                        .value
+                        .trim(),
+
+                reason:
+                    $("visitor-reason")
+                        .value,
+
+                notes:
+                    $("visitor-notes")
+                        .value
+                        .trim(),
+
+                check_in:
+                    now.toISOString(),
+
+                check_out:
+                    "",
+
+                check_in_date:
+                    parts.date,
+
+                check_in_time:
+                    parts.time,
+
+                check_out_date:
+                    "",
+
+                check_out_time:
+                    ""
+
+            };
+
+
+            backendRecords.push(record);
+
+
+            $("created-code")
+                .textContent =
+                record.visitor_code;
+
+
+            $("checkin-form")
+                .classList.add("hidden");
+
+
+            $("checkin-success")
+                .classList.remove("hidden");
+
+
+            showToast(
+                "Visitor checked in successfully."
+            );
+
+
+            saveRecords();
+
+            renderDashboard();
+
+            renderCalendar();
+
+        }
+    );
+
+
+/* =====================================================
+   NEW CHECK-IN
+===================================================== */
+
+$("new-checkin")
+    .addEventListener(
+        "click",
+        () => {
+
+            $("checkin-form").reset();
+
+            $("checkin-success")
+                .classList.add("hidden");
+
+            $("checkin-form")
+                .classList.remove("hidden");
+
+            $("visitor-name")
+                .focus();
+
+        }
+    );
+
+
+/* =====================================================
+   CHECK-OUT LOOKUP
+===================================================== */
+
+$("lookup-form")
+    .addEventListener(
+        "submit",
+        event => {
+
+            event.preventDefault();
+
+
+            const code =
+                $("lookup-code")
+                    .value
+                    .trim()
+                    .toUpperCase();
+
+
+            selectedRecord =
+                backendRecords.find(
+                    record =>
+                        record.visitor_code
+                            .toUpperCase() === code &&
+                        !record.check_out
+                );
+
+
+            if (!selectedRecord) {
+
+                $("checkout-card")
+                    .classList.add("hidden");
+
+                showToast(
+                    "No active visitor was found with that code.",
+                    true
+                );
+
+                return;
+
+            }
+
+
+            $("checkout-name")
+                .textContent =
+                selectedRecord.name;
+
+
+            const details =
+                $("checkout-details");
+
+            details.replaceChildren();
+
+
+            const data = [
+
+                [
+                    "Company",
+                    selectedRecord.company
+                ],
+
+                [
+                    "Host",
+                    selectedRecord.person_to_visit
+                ],
+
+                [
+                    "Reason",
+                    selectedRecord.reason
+                ],
+
+                [
+                    "Checked In",
+                    formatDate(
+                        selectedRecord.check_in
+                    )
+                ]
+
+            ];
+
+
+            data.forEach(
+                ([label, value]) => {
+
+                    const item =
+                        document.createElement("div");
+
+                    item.className =
+                        "bg-slate-50 rounded-lg p-3";
+
+
+                    item.innerHTML = `
+                        <p class="text-xs uppercase tracking-wide text-slate-500 font-bold">
+                            ${label}
+                        </p>
+
+                        <p class="font-semibold mt-1">
+                            ${value || "—"}
+                        </p>
+                    `;
+
+
+                    details.appendChild(item);
+
+                }
+            );
+
+
+            $("checkout-card")
+                .classList.remove("hidden");
+
+        }
+    );
+
+
+/* =====================================================
+   CONFIRM CHECK-OUT
+===================================================== */
+
+$("checkout-confirm")
+    .addEventListener(
+        "click",
+        () => {
+
+            if (!selectedRecord) {
+                return;
+            }
+
+
+            const now =
+                new Date();
+
+
+            const parts =
+                localParts(now);
+
+
+            selectedRecord.check_out =
+                now.toISOString();
+
+
+            selectedRecord.check_out_date =
+                parts.date;
+
+
+            selectedRecord.check_out_time =
+                parts.time;
+
+
+            saveRecords();
+
+
+            $("checkout-card")
+                .classList.add("hidden");
+
+
+            $("lookup-form")
+                .reset();
+
+
+            selectedRecord = null;
+
+
+            showToast(
+                "Visitor checked out successfully."
+            );
+
+
+            renderDashboard();
+
+            renderCalendar();
+
+        }
+    );
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+$("history-search")
+    .addEventListener(
+        "input",
+        renderHistory
+    );
+
+
+/* =====================================================
+   CALENDAR BUTTONS
+===================================================== */
+
+$("calendar-prev")
+    .addEventListener(
+        "click",
+        () => {
+
+            calendarMonth.setMonth(
+                calendarMonth.getMonth() - 1
+            );
+
+            renderCalendar();
+
+        }
+    );
+
+
+$("calendar-next")
+    .addEventListener(
+        "click",
+        () => {
+
+            calendarMonth.setMonth(
+                calendarMonth.getMonth() + 1
+            );
+
+            renderCalendar();
+
+        }
+    );
+
+
+$("calendar-today")
+    .addEventListener(
+        "click",
+        () => {
+
+            const now =
+                new Date();
+
+            calendarMonth =
+                new Date(
+                    now.getFullYear(),
+                    now.getMonth(),
+                    1
+                );
+
+            renderCalendar();
+
+        }
+    );
+
+
+/* =====================================================
+   CLEAR DATA
+===================================================== */
+
+$("clear-trigger")
+    .addEventListener(
+        "click",
+        () => {
+
+            $("clear-panel")
+                .classList.remove("hidden");
+
+        }
+    );
+
+
+$("clear-cancel")
+    .addEventListener(
+        "click",
+        () => {
+
+            $("clear-panel")
+                .classList.add("hidden");
+
+        }
+    );
+
+
+$("clear-confirm")
+    .addEventListener(
+        "click",
+        () => {
+
+            backendRecords = [];
+
+            saveRecords();
+
+            $("clear-panel")
+                .classList.add("hidden");
+
+            renderDashboard();
+
+            renderCalendar();
+
+            showToast(
+                "Visitor records cleared."
+            );
+
+        }
+    );
+
+
+/* =====================================================
+   LOCAL STORAGE
+===================================================== */
+
+function saveRecords() {
+
+    localStorage.setItem(
+        "tbsVisitorRecords",
+        JSON.stringify(backendRecords)
+    );
+
+}
+
+
+function loadRecords() {
+
+    try {
+
+        const saved =
+            localStorage.getItem(
+                "tbsVisitorRecords"
+            );
+
+
+        if (saved) {
+
+            backendRecords =
+                JSON.parse(saved);
+
+        }
+
+    } catch (error) {
+
+        backendRecords = [];
+
+    }
+
+}
+
+
+/* =====================================================
+   CLOCK
+===================================================== */
+
+function updateClock() {
+
+    $("clock").textContent =
+        new Intl.DateTimeFormat(
+            "en-ZW",
+            {
+                dateStyle: "full",
+                timeStyle: "short"
+            }
+        ).format(new Date());
+
+}
+
+
+/* =====================================================
+   START APP
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+        lucide.createIcons();
+
+        loadRecords();
+
+        updateClock();
+
+        setInterval(
+            updateClock,
+            1000
+        );
+
+
+        document
+            .querySelectorAll("[data-view]")
+            .forEach(button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        showView(
+                            button.dataset.view
+                        );
+
+                    }
+                );
+
+            });
+
+
+        renderDashboard();
+
+        renderCalendar();
+
+
+        $("loading-state")
+            .classList.add("hidden");
+
+    }
+);
+
+</script>
 
 </body>
 </html>
+```
